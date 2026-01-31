@@ -1,80 +1,98 @@
-# AI Counsellor MVP - Study Abroad Planning System
+# 🎓 AI Counsellor
 
-A complete, working MVP of a stage-based, AI-powered guided decision system for study-abroad planning.
+> **Your intelligent companion for the study-abroad journey.**  
+> *Plan, Shortlist, and Apply to your dream universities with AI-powered guidance.*
 
-## 🎯 Project Overview
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge&logo=vercel)](https://claritycounsellor.netlify.app/)
+[![Watch Demo](https://img.shields.io/badge/Watch%20Demo-Video%20Walkthrough-red?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1LPlGecSm_MCqqG6kkf5wJ-U89kE-8Gz7/view?usp=sharing)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-**AI Counsellor** is a full-stack web application that guides students through their study-abroad journey using a strict, stage-based flow powered by AI recommendations.
+---
 
-### Tech Stack
+## 🚀 Project Overview
 
-- **Frontend**: Next.js 14 (App Router) + React + Tailwind CSS
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL
-- **Authentication**: JWT
-- **AI**: Gemini / OpenAI (configurable)
+**AI Counsellor** is a cutting-edge, full-stack web application designed to democratize study-abroad counseling. It replaces expensive consultants with an **intelligent, context-aware AI** that guides students through every step of their journey—from profile building to university shortlisting and final application submission.
 
-## 🚀 Quick Start
+Unlike generic chatbots, AI Counsellor operates on a **strict, stage-based framework** ensuring students follow a proven roadmap to success.
+
+### ✨ Key Features
+
+*   **🧠 Intelligent AI Agent**: powered by Google Gemini (or OpenAI), context-aware of your profile, budget, and goals.
+*   **📊 Smart Profile Analysis**: Calculates your "Profile Strength" based on GPA, test scores (IELTS/GRE), and SOP readiness.
+*   **🎯 Dream / Target / Safe Sorting**: AI automatically categorizes universities based on your acceptance chances.
+*   **🔒 Stage-Based Progression**: 
+    1.  **Profile Building**: Focus on exams and documents.
+    2.  **University Discovery**: explore and shortlist options.
+    3.  **Finalization**: "Lock" your choices to commit.
+    4.  **Application**: track deadlines and rigorous tasks.
+*   **✅ Automated Task Management**: The AI automatically creates and manages your To-Do list based on your conversations.
+
+---
+
+## 🛠️ Tech Stack
+
+This project is built with a modern, scalable, and type-safe stack:
+
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **Frontend** | [Next.js 14](https://nextjs.org/) | App Router, Server Components, Static Export |
+| **UI / UX** | [Tailwind CSS](https://tailwindcss.com/) | Responsive, modern, glassmorphic design |
+| **Backend** | [FastAPI](https://fastapi.tiangolo.com/) | High-performance Python API |
+| **Database** | [PostgreSQL](https://www.postgresql.org/) | Relational data persistence |
+| **ORM** | [SQLAlchemy](https://www.sqlalchemy.org/) | Python SQL toolkit and ORM |
+| **AI Engine** | [Google Gemini](https://deepmind.google/technologies/gemini/) | Generative AI model for reasoning and logic |
+| **Deployment**| Netlify (Frontend) + Render (Backend) | CI/CD Pipeline |
+
+---
+
+## 📸 Screenshots
+
+| Dashboard | AI Chat |
+| :---: | :---: |
+| ![Dashboard Mockup](https://via.placeholder.com/600x400?text=Dashboard+View) | ![Chat Mockup](https://via.placeholder.com/600x400?text=AI+Chat+Interface) |
+
+| University Discovery | Profile Analytics |
+| :---: | :---: |
+| ![Universities Mockup](https://via.placeholder.com/600x400?text=University+Finder) | ![Profile Mockup](https://via.placeholder.com/600x400?text=Profile+Analytics) |
+
+*(Note: Screenshots to be updated)*
+
+---
+
+## ⚡ Quick Start
+
+Follow these steps to set up the project locally.
 
 ### Prerequisites
+*   Node.js 18+
+*   Python 3.11+
+*   PostgreSQL (or Docker)
 
-- Node.js 18+ and npm
-- Python 3.9+
-- Docker (for PostgreSQL) OR PostgreSQL installed locally
-- Gemini API Key or OpenAI API Key
-
-### 1. Database Setup
-
-**Option A: Using Docker (Recommended)**
-
-```bash
-# From project root
-docker-compose up -d
-```
-
-**Option B: Local PostgreSQL**
-
-```bash
-# Create database
-createdb ai_counsellor
-
-# Update DATABASE_URL in backend/.env
-```
-
-### 2. Backend Setup
+### 1. Backend Setup
 
 ```bash
 cd backend
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+# Configure Environment
 cp .env.example .env
+# Update .env with your DATABASE_URL and GEMINI_API_KEY
 
-# Edit .env and add your API keys:
-# - SECRET_KEY (generate a random string)
-# - GEMINI_API_KEY or OPENAI_API_KEY
-# - DATABASE_URL (if not using Docker default)
-
-# Run migrations (create tables)
+# Initialize Database
 python -c "from database import init_db; init_db()"
+python utils/seed_data.py  # (Optional) Add dummy universities
 
-# Seed university data
-python utils/seed_data.py
-
-# Start backend server
-python main.py
+# Run Server
+uvicorn main:app --reload
 ```
 
-Backend will run at `http://localhost:8000`
-API docs at `http://localhost:8000/docs`
-
-### 3. Frontend Setup
+### 2. Frontend Setup
 
 ```bash
 cd frontend
@@ -82,238 +100,36 @@ cd frontend
 # Install dependencies
 npm install
 
-# Start development server
+# Configure Environment
+cp .env.local.example .env.local
+# Set NEXT_PUBLIC_API_URL=http://localhost:8000/api
+
+# Run Dev Server
 npm run dev
 ```
 
-Frontend will run at `http://localhost:3000`
-
-## 📖 User Flow
-
-1. **Landing Page** → Sign up or login
-2. **Authentication** → Create account with email/password
-3. **Mandatory Onboarding** (4 Steps):
-   - Academic Background (education, GPA, degree)
-   - Study Goals (intended degree, field, countries, intake year)
-   - Budget Planning (range, funding type)
-   - Exams & SOP Status (IELTS, GRE, GMAT, SOP readiness)
-4. **Dashboard** → View profile strength, current stage, and tasks
-5. **AI Counsellor** → Chat for personalized recommendations
-6. **University Discovery** → AI recommends Dream/Target/Safe universities
-7. **University Shortlisting** → Save interesting universities
-8. **University Locking** → Commit to final choices (enables application guidance)
-9. **Application Guidance** → Get tasks, deadlines, and document checklists
-
-## 🎨 Features
-
-### Stage-Based Flow (Enforced)
-- Stage 1: Profile Building
-- Stage 2: University Discovery
-- Stage 3: University Finalization
-- Stage 4: Application Preparation
-
-### AI Counsellor
-- Context-aware conversations
-- Understands user profile, current stage, and goals
-- Can execute actions:
-  - Shortlist universities
-  - Lock universities
-  - Create todos
-- Provides Dream/Target/Safe categorization
-
-### University Recommendations
-- 20 pre-seeded universities across USA, UK, Canada, Australia, Germany
-- AI-powered fit analysis
-- Acceptance likelihood calculation
-- Risk factor identification
-- Cost and budget matching
-
-### Profile Strength Analysis
-- Academic strength (based on GPA)
-- Exam readiness (IELTS, GRE, GMAT)
-- SOP status
-- Overall score (0-100)
-
-### University Locking System
-- Must shortlist before locking
-- Locking enables application guidance
-- Warning before unlocking (resets strategy)
-
-## 🗂️ Project Structure
-
-```
-.
-├── backend/
-│   ├── main.py                 # FastAPI app entry
-│   ├── config.py               # Configuration
-│   ├── database.py             # Database setup
-│   ├── models/                 # SQLAlchemy models
-│   ├── schemas/                # Pydantic schemas
-│   ├── routes/                 # API endpoints
-│   ├── services/               # Business logic
-│   │   ├── auth_service.py
-│   │   ├── profile_service.py
-│   │   ├── ai_service.py
-│   │   └── recommendation_service.py
-│   └── utils/
-│       ├── dependencies.py     # Auth middleware
-│       └── seed_data.py        # Database seeder
-│
-├── frontend/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.js
-│   │   ├── page.js             # Landing
-│   │   ├── signup/
-│   │   ├── login/
-│   │   ├── onboarding/
-│   │   ├── dashboard/
-│   │   ├── counsellor/         # AI chat
-│   │   └── universities/
-│   ├── components/
-│   │   ├── AuthProvider.js
-│   │   ├── ProtectedRoute.js
-│   │   ├── StageIndicator.js
-│   │   ├── ProfileStrength.js
-│   │   ├── UniversityCard.js
-│   │   └── TodoList.js
-│   └── lib/
-│       └── api.js              # API client
-│
-└── docker-compose.yml          # PostgreSQL container
-```
-
-## 📡 API Endpoints
-
-### Authentication
-- `POST /api/auth/signup` - Create account
-- `POST /api/auth/login` - Login
-
-### Onboarding
-- `POST /api/onboarding` - Submit/update onboarding
-- `GET /api/onboarding` - Get onboarding data
-- `GET /api/onboarding/status` - Check completion
-
-### Dashboard
-- `GET /api/dashboard` - Get profile, stage, todos
-
-### Universities
-- `GET /api/universities/discover` - Browse universities
-- `GET /api/universities/recommendations` - AI recommendations
-- `POST /api/universities/shortlist` - Shortlist university
-- `GET /api/universities/shortlisted` - Get shortlist
-- `POST /api/universities/lock` - Lock university
-- `GET /api/universities/locked` - Get locked
-- `POST /api/universities/unlock/{id}` - Unlock
-- `DELETE /api/universities/remove/{id}` - Remove
-
-### AI Counsellor
-- `POST /api/counsellor/chat` - Send message to AI
-- `GET /api/counsellor/history` - Get chat history
-
-### Todos
-- `POST /api/todos` - Create todo
-- `GET /api/todos` - List todos
-- `PATCH /api/todos/{id}` - Update todo
-- `POST /api/todos/{id}/complete` - Mark complete
-- `DELETE /api/todos/{id}` - Delete todo
-
-## 🧠 AI Prompting System
-
-The AI Counsellor uses context-aware prompting:
-
-1. **User Context**: Profile, exams, goals, budget
-2. **Stage Context**: Current stage and stage rules
-3. **University Context**: Shortlisted and locked universities
-4. **Action Detection**: Extracts structured actions from responses
-5. **Execution**: Automatically executes detected actions
-
-## 🎬 Demo Flow (3-5 minutes)
-
-1. Show landing page (15s)
-2. Sign up quickly (20s)
-3. Complete onboarding (60s)
-4. Show dashboard with profile analysis (20s)
-5. Chat with AI → get recommendations (45s)
-6. Shortlist 2-3 universities (30s)
-7. Lock one university (15s)
-8. Show application guidance unlocked (20s)
-9. Show generated todos (15s)
-10. Edit profile → show updated recommendations (20s)
-
-## 🔐 Environment Variables
-
-### Backend (.env)
-```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ai_counsellor
-SECRET_KEY=your-secret-key-here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-AI_SERVICE=gemini  # or openai
-GEMINI_API_KEY=your-gemini-key
-OPENAI_API_KEY=your-openai-key
-FRONTEND_URL=http://localhost:3000
-```
-
-### Frontend (.env.local)
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-```
-
-## 🐛 Troubleshooting
-
-**Database connection error:**
-```bash
-# Check if PostgreSQL is running
-docker ps  # Should show ai_counsellor_db
-
-# Restart if needed
-docker-compose restart
-```
-
-**Backend won't start:**
-```bash
-# Check Python version
-python --version  # Should be 3.9+
-
-# Reinstall dependencies
-pip install --force-reinstall -r requirements.txt
-```
-
-**Frontend errors:**
-```bash
-# Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**AI not responding:**
-- Check API key in backend/.env
-- Verify AI_SERVICE is set correctly (gemini or openai)
-- Check backend logs for errors
-
-## 📝 Notes
-
-- **Seed Data**: 20 universities pre-loaded across multiple countries
-- **Stage Flow**: Strictly enforced - cannot skip stages
-- **Onboarding**: Blocks all features until completed
-- **University Locking**:Required for application guidance
-- **AI Actions**: Automatically executed (shortlist, lock, create todos)
-
-## 🚧 Production Deployment
-
-For production:
-1. Set strong SECRET_KEY
-2. Use production PostgreSQL database
-3. Enable HTTPS
-4. Set proper CORS origins
-5. Use environment-specific API keys
-6. Add rate limiting
-7. Implement proper error handling and logging
-
-## 📄 License
-
-Built as MVP demonstration. Customize as needed.
+Visit `http://localhost:3000` to see the app!
 
 ---
 
-**Built with ❤️ using Next.js, FastAPI, and AI**
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1.  Fork the repository
+2.  Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+---
+
+## 📬 Contact
+
+**Amol Shah**  
+- [GitHub](https://github.com/Am0lShah)
+- [LinkedIn](https://linkedin.com/in/Am0lShah) (Update with actual link if available)
+
+---
+
+<center>Built with ❤️ and ☕ by Amol Shah</center>
