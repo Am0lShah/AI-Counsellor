@@ -23,7 +23,7 @@ class AICounsellorService:
                     raise Exception("GEMINI_API_KEY environment variable not set")
                 import google.generativeai as genai
                 genai.configure(api_key=settings.gemini_api_key)
-                self.model = genai.GenerativeModel('gemini-1.5-flash')
+                self.model = genai.GenerativeModel('gemini-flash-latest')
             elif self.ai_service == "openai":
                 if not settings.openai_api_key:
                     raise Exception("OPENAI_API_KEY environment variable not set")
