@@ -100,61 +100,94 @@ function Universities() {
         }
     };
 
+    const stats = {
+        dream: shortlisted.filter(u => u.category === 'dream').length,
+        target: shortlisted.filter(u => u.category === 'target').length,
+        safe: shortlisted.filter(u => u.category === 'safe').length,
+    };
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
             {/* Header */}
-            <div className="bg-slate-900 border-b border-white/10 text-white pt-8 pb-12">
+            <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 pt-8 pb-8 sticky top-0 z-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <div>
-                            <h1 className="text-3xl font-bold font-display tracking-tight flex items-center gap-3">
-                                <FaUniversity className="text-primary-400" />
+                            <h1 className="text-3xl font-bold font-display tracking-tight flex items-center gap-3 text-slate-900 dark:text-white">
+                                <FaUniversity className="text-primary-600" />
                                 University Discovery
                             </h1>
-                            <p className="text-slate-400 dark:text-slate-300 mt-2 max-w-xl">
+                            <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-xl text-sm">
                                 Explore AI-curated recommendations based on your profile, shortlist your favorites, and lock them to begin your application journey.
                             </p>
                         </div>
-                        <Link href="/dashboard" className="btn-secondary bg-white/10 text-white border-white/20 hover:bg-white/20 hover:border-white/30 backdrop-blur-md self-start md:self-center">
-                            Back to Dashboard
+                        <Link href="/dashboard" className="btn-secondary text-sm self-start md:self-center">
+                            ← Back to Dashboard
                         </Link>
                     </div>
 
-                    {/* Tabs */}
-                    <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                        <button
-                            onClick={() => setTab('recommendations')}
-                            className={`px-6 py-2.5 rounded-full font-medium whitespace-nowrap transition-all border ${tab === 'recommendations'
-                                ? 'bg-primary-600 border-primary-500 text-white shadow-lg shadow-primary-900/50'
-                                : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
-                                }`}
-                        >
-                            AI Recommendations
-                        </button>
-                        <button
-                            onClick={() => setTab('shortlisted')}
-                            className={`px-6 py-2.5 rounded-full font-medium whitespace-nowrap transition-all border ${tab === 'shortlisted'
-                                ? 'bg-primary-600 border-primary-500 text-white shadow-lg shadow-primary-900/50'
-                                : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
-                                }`}
-                        >
-                            Shortlisted ({shortlisted.length})
-                        </button>
-                        <button
-                            onClick={() => setTab('locked')}
-                            className={`px-6 py-2.5 rounded-full font-medium whitespace-nowrap transition-all border ${tab === 'locked'
-                                ? 'bg-primary-600 border-primary-500 text-white shadow-lg shadow-primary-900/50'
-                                : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
-                                }`}
-                        >
-                            Locked ({locked.length})
-                        </button>
+                    {/* Navigation & Stats Bar */}
+                    <div className="flex flex-col md:flex-row gap-6 items-end justify-between">
+                        {/* Tabs */}
+                        <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden self-stretch md:self-auto">
+                            <button
+                                onClick={() => setTab('recommendations')}
+                                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${tab === 'recommendations'
+                                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                                    }`}
+                            >
+                                AI Recommendations
+                            </button>
+                            <button
+                                onClick={() => setTab('shortlisted')}
+                                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${tab === 'shortlisted'
+                                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                                    }`}
+                            >
+                                Shortlist
+                                {shortlisted.length > 0 && (
+                                    <span className="bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded text-[10px]">{shortlisted.length}</span>
+                                )}
+                            </button>
+                            <button
+                                onClick={() => setTab('locked')}
+                                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${tab === 'locked'
+                                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                                    }`}
+                            >
+                                Locked
+                                {locked.length > 0 && (
+                                    <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded text-[10px]">{locked.length}</span>
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Mini Stats Dashboard */}
+                        {tab === 'shortlisted' && shortlisted.length > 0 && (
+                            <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl hidden md:flex">
+                                <div className="px-4 py-2 bg-white dark:bg-slate-700 rounded-lg flex flex-col items-center min-w-[80px]">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">Dream</span>
+                                    <span className="text-lg font-bold text-slate-900 dark:text-white">{stats.dream}</span>
+                                </div>
+                                <div className="px-4 py-2 bg-white dark:bg-slate-700 rounded-lg flex flex-col items-center min-w-[80px]">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Target</span>
+                                    <span className="text-lg font-bold text-slate-900 dark:text-white">{stats.target}</span>
+                                </div>
+                                <div className="px-4 py-2 bg-white dark:bg-slate-700 rounded-lg flex flex-col items-center min-w-[80px]">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Safe</span>
+                                    <span className="text-lg font-bold text-slate-900 dark:text-white">{stats.safe}</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {loading ? (
                     <div className="flex justify-center py-20">
                         <div className="relative">
@@ -174,11 +207,18 @@ function Universities() {
                         {/* Recommendations Tab */}
                         {tab === 'recommendations' && (
                             <div>
-                                <div className="mb-6 flex items-center gap-2 text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 backdrop-blur-sm">
-                                    <FaChartLine className="text-primary-500" />
-                                    <p className="text-sm">
-                                        Categorized into <span className="font-bold text-purple-600 dark:text-purple-300">Dream</span> (reach), <span className="font-bold text-blue-600 dark:text-blue-300">Target</span> (match), and <span className="font-bold text-emerald-600 dark:text-emerald-300">Safe</span> (likely) based on your profile stats.
-                                    </p>
+                                <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-primary-50 to-indigo-50 dark:from-primary-900/10 dark:to-indigo-900/10 p-6 rounded-2xl border border-primary-100 dark:border-primary-900/20">
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 dark:text-white mb-1">AI-Powered Matches</h3>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                                            We've analyzed your profile against millions of data points to find your best fit universities.
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2 text-xs font-medium">
+                                        <span className="px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm text-purple-600 dark:text-purple-400">Dream (Reach)</span>
+                                        <span className="px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm text-blue-600 dark:text-blue-400">Target (Match)</span>
+                                        <span className="px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm text-emerald-600 dark:text-emerald-400">Safe (Likely)</span>
+                                    </div>
                                 </div>
 
                                 {universities.length === 0 ? (
@@ -193,7 +233,7 @@ function Universities() {
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {universities.map((rec, i) => (
                                             <MotionDiv
                                                 key={rec.university.id}
@@ -221,26 +261,21 @@ function Universities() {
                         {/* Shortlisted Tab */}
                         {tab === 'shortlisted' && (
                             <div>
-                                <div className="mb-6 flex items-center gap-2 text-slate-600 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 backdrop-blur-sm">
-                                    <FaLock className="text-primary-500" />
-                                    <p className="text-sm">
-                                        Lock a university to unlock its tailored <span className="font-semibold text-slate-900 dark:text-slate-200">Application Action Plan</span> and guidance.
-                                    </p>
-                                </div>
-
                                 {shortlisted.length === 0 ? (
-                                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 border-dashed">
-                                        <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full mb-6 text-4xl">📝</div>
-                                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Your Shortlist is Empty</h3>
-                                        <p className="text-slate-500 dark:text-slate-300 mb-6">
-                                            Browse recommendations and save the ones you like.
+                                    <div className="text-center py-24 bg-slate-50/50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 border-dashed">
+                                        <div className="inline-flex items-center justify-center w-24 h-24 bg-white dark:bg-slate-800 rounded-full mb-6 shadow-sm">
+                                            <FaLock className="text-slate-300 dark:text-slate-600 text-3xl" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Your Shortlist is Empty</h3>
+                                        <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto text-lg">
+                                            Go to Recommendations and find universities that spark your interest.
                                         </p>
-                                        <button onClick={() => setTab('recommendations')} className="btn-primary">
-                                            Browse Recommendations
+                                        <button onClick={() => setTab('recommendations')} className="btn-primary py-3 px-8 text-lg">
+                                            Find Universities
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {shortlisted.map((userUni, i) => (
                                             <MotionDiv
                                                 key={userUni.id}
@@ -277,16 +312,19 @@ function Universities() {
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 mb-6 flex items-start gap-3">
-                                            <div className="text-emerald-600 dark:text-emerald-400 mt-0.5 text-lg">✓</div>
+                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-8 flex items-start gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400 font-bold text-xl">✓</div>
                                             <div>
-                                                <h4 className="font-bold text-emerald-800 dark:text-emerald-300">Application Guidance Active</h4>
-                                                <p className="text-emerald-600 dark:text-emerald-400 text-sm mt-1">
-                                                    Check your <Link href="/dashboard" className="underline font-medium hover:text-emerald-800 dark:hover:text-emerald-200">Dashboard</Link> for personalized tasks, deadlines, and essay topics for these universities.
+                                                <h4 className="text-lg font-bold text-emerald-900 dark:text-emerald-300">Application Mode Active</h4>
+                                                <p className="text-emerald-700 dark:text-emerald-400 mt-1 mb-3">
+                                                    You have locked {locked.length} universities. Our AI has generated a personalized <span className="font-semibold">Action Plan</span> for each.
                                                 </p>
+                                                <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-800 dark:text-emerald-200 hover:underline">
+                                                    Go to Dashboard to see tasks →
+                                                </Link>
                                             </div>
                                         </div>
-                                        <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {locked.map((userUni, i) => (
                                                 <MotionDiv
                                                     key={userUni.id}
@@ -303,7 +341,7 @@ function Universities() {
                                                         />
                                                         <button
                                                             onClick={() => handleUnlock(userUni.university_id)}
-                                                            className="w-full mt-3 px-4 py-3 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all border border-slate-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-800 text-xs font-medium uppercase tracking-wide flex items-center justify-center gap-2"
+                                                            className="w-full mt-3 px-4 py-3 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all border border-slate-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-800 text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-2"
                                                         >
                                                             <FaExclamationTriangle /> Unlock (Resets Strategy)
                                                         </button>
