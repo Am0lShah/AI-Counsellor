@@ -6,8 +6,20 @@ from models.user import User, ChatHistory
 from schemas.ai import ChatRequest, ChatResponse, ChatHistoryResponse
 from services.ai_service import AICounsellorService
 from utils.dependencies import require_onboarding_complete
+from config import settings
 
 router = APIRouter(prefix="/counsellor", tags=["AI Counsellor"])
+
+
+@router.get("/health")
+def health_check():
+    """Check AI service health and configuration."""
+    return {
+        "ai_service": settings.ai_service,
+        "gemini_key_configured": bool(settings.gemini_api_key),
+        "openai_key_configured": bool(settings.openai_api_key),
+        "status": "healthy"
+    }
 
 
 @router.post("/chat", response_model=ChatResponse)

@@ -17,13 +17,24 @@ class AICounsellorService:
         self.ai_service = settings.ai_service
         
         # Initialize AI client
-        if self.ai_service == "gemini":
-            import google.generativeai as genai
-            genai.configure(api_key=settings.gemini_api_key)
-            self.model = genai.GenerativeModel('gemini-flash-latest')
-        elif self.ai_service == "openai":
-            from openai import OpenAI
-            self.client = OpenAI(api_key=settings.openai_api_key)
+        try:
+            if self.ai_service == "gemini":
+                if not settings.gemini_api_key:
+                    raise Exception("GEMINI_API_KEY environment variable not set")
+                import google.generativeai as genai
+                genai.configure(api_key=settings.gemini_api_key)
+                self.model = genai.GenerativeModel('gemini-1.5-flash')
+            elif self.ai_service == "openai":
+                if not settings.openai_api_key:
+                    raise Exception("OPENAI_API_KEY environment variable not set")
+                from openai import OpenAI
+                self.client = OpenAI(api_key=settings.openai_api_key)
+            else:
+                raise Exception(f"Unsupported AI service: {self.ai_service}")
+        except Exception as e:
+            print(f"AI Service Initialization Error: {str(e)}")
+            self.model = None
+            self.client = None
     
     def build_context(
         self,
@@ -191,9 +202,15 @@ Action format:
         # Get AI response
         try:
             if self.ai_service == "gemini":
+                if not hasattr(self, 'model') or self.model is None:
+                    raise Exception("Gemini API key not configured or invalid")
                 response = self.model.generate_content(full_prompt)
+                if not response or not response.text:
+                    raise Exception("Empty response from Gemini API")
                 ai_message = response.text
             else:  # openai
+                if not hasattr(self, 'client') or self.client is None:
+                    raise Exception("OpenAI API key not configured or invalid")
                 response = self.client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -205,8 +222,9 @@ Action format:
         except Exception as e:
             print(f"AI Service Error: {str(e)}")
             return {
-                "message": "I apologize, but I am currently experiencing high traffic or quota limits. Please try again in a minute.",
-                "actions": []
+                "message": "I apologize, but I'm currently experiencing technical difficulties. This might be due to API quota limits or configuration issues. Please try again in a moment.",
+                "actions": [],
+                "suggested_questions": []
             }
         
         # Extract data (actions + suggestions)
@@ -222,10 +240,14 @@ Action format:
         clean_message = re.sub(r'\[DATA\].*?\[/DATA\]', '', ai_message, flags=re.DOTALL)
         clean_message = re.sub(r'\[ACTIONS\].*?\[/ACTIONS\]', '', clean_message, flags=re.DOTALL).strip()
         
+        # Ensure we always return a valid response
+        if not clean_message:
+            clean_message = "I understand your question, but I'm having trouble generating a proper response right now. Could you please rephrase your question?"
+        
         return {
             "message": clean_message,
-            "actions": actions,
-            "suggested_questions": suggestions
+            "actions": actions or [],
+            "suggested_questions": suggestions or []
         }
     
     def _extract_data(self, message: str) -> Optional[Dict[str, Any]]:
